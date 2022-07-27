@@ -1,0 +1,40 @@
+﻿@page "/participantDetail"
+@using Newtonsoft.Json
+@using STW.SurveyAppWithMVCBlazer.Models
+@inject IJSRuntime jsRuntime;
+@inject NavigationManager NavManager;
+
+<PageTitle>Participant Detail</PageTitle>
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Enter Participant's Details</h5>
+    </div>
+
+    <div class="modal-body">
+        <div class="mb-3">
+            <label for="firstName" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="firstName" placeholder="Enter First Name" autocomplete="off" required @bind="user.FirstName" />
+        </div>
+        <div class="mb-3">
+            <label for="lastName" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="lastName" placeholder="Enter Last Name" autocomplete="off" required @bind="user.LastName" />
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="name@example.com" autocomplete="off" required @bind="user.Email" />
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-success" @onclick="Save">Ready</button>
+    </div>
+</div>
+
+@code {
+    private User user = new User();
+    private async Task Save()
+    {
+        await jsRuntime.InvokeVoidAsync("localStorage.setItem", "participant", JsonConvert.SerializeObject(user)).ConfigureAwait(false);
+        NavManager.NavigateTo("/survey");
+    }
+}

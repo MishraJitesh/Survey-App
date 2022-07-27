@@ -1,0 +1,52 @@
+﻿@page "/surveyResult"
+@using Newtonsoft.Json
+@using STW.SurveyAppWithMVCBlazer.Models
+@inject IJSRuntime jsRuntime;
+
+<div class="mx-0 mx-sm-auto">
+    <div class="card">
+        <div class="card-header bg-primary">
+            <h3 class="card-title text-white mt-2" id="thankyouHeading">Thank you, @participant.FirstName</h3>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="@imageSource" height="300" width="300" />                    
+                </div>
+                <div class="col-md-8" style="margin-top:50px">
+                        <h4 class="card-header ">Participant's Detail</h4>
+                        <ul class="list-group">
+                            <li class="list-group-item ">Participant Name :  @participant.FirstName  @participant.LastName</li>
+                            <li class="list-group-item">Email :  @participant.Email</li>
+                            <li class="list-group-item">
+                                Score (out of 5) :  @participant.Score
+                            </li>
+                            <li class="list-group-item">Time Taken :  @participant.TimeTaken Sec</li>
+                        </ul>
+                    </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@code {
+    User participant = new User();
+    string imageSource = $"result.png";
+    protected override async Task OnInitializedAsync()
+    {
+        GetUser();
+        imageSource = $"result.png";
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        GetUser();
+        if (firstRender)
+        {            
+            StateHasChanged();
+        }
+    }
+    private async void GetUser() => participant = JsonConvert.DeserializeObject<User>(await jsRuntime.InvokeAsync<string>("localStorage.getItem", "participant"));
+
+}
